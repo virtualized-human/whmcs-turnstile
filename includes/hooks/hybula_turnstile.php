@@ -72,15 +72,19 @@ if (!isset($_SESSION['adminid'])) {
             (in_array('contact', hybulaTurnstileLocations) && $pageFile == 'contact') ||
             (in_array('ticket', hybulaTurnstileLocations) && $pageFile == 'submitticket') ||
             (in_array('checkout', hybulaTurnstileLocations) && $pageFile == 'cart' && $_GET['a'] == 'checkout')) {
-            return '<script>
-        var turnstileDiv = document.createElement("div");
-        turnstileDiv.innerHTML = \'<div class="cf-turnstile" data-sitekey="'.hybulaTurnstileSite.'" data-callback="javascriptCallback" data-theme="'.hybulaTurnstileTheme.'"></div>'.(hybulaTurnstileCredits ? '<a href="https://github.com/hybula/whmcs-turnstile" target="_blank"><small class="text-muted text-uppercase">Captcha integration by Hybula</small></a>' : '<!-- Captcha integration by Hybula (https://github.com/hybula/whmcs-turnstile) -->').'<br><br>\';
-        if (document.querySelector(\'input[type=submit],#login,div.text-center > button[type=submit],#openTicketSubmit\')) {
-            var form = document.querySelector(\'input[type=submit],#login,div.text-center > button[type=submit],#openTicketSubmit\').parentNode;
-            form.insertBefore(turnstileDiv, document.querySelector(\'input[type=submit],#login,div.text-center > button[type=submit],#openTicketSubmit\'));
-        }
-        </script>
-        <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>';
-        }
+    return '<script>
+    var turnstileDiv = document.createElement("div");
+    turnstileDiv.innerHTML = \'<div class="cf-turnstile" data-sitekey="'.hybulaTurnstileSite.'" data-callback="javascriptCallback" data-theme="'.hybulaTurnstileTheme.'"></div>'.(hybulaTurnstileCredits ? '<a href="https://github.com/hybula/whmcs-turnstile" target="_blank"><small class="text-muted text-uppercase">Captcha integration by Hybula</small></a>' : '<!-- Captcha integration by Hybula (https://github.com/hybula/whmcs-turnstile) -->').'\';
+    var targetSelector = "input[type=submit], button[type=submit]";
+    if (window.location.search.includes("a=checkout") && document.querySelector("#btnCompleteOrder")) {
+        targetSelector = "#btnCompleteOrder";
+    }
+    if (document.querySelector(targetSelector)) {
+        var form = document.querySelector(targetSelector).parentNode;
+        form.insertBefore(turnstileDiv, document.querySelector(targetSelector));
+    }
+    </script>
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>';
+}
     });
 }
